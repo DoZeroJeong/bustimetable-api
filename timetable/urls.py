@@ -3,6 +3,6 @@ from .views import *
 
 
 urlpatterns = [
-    path('countryside', InterCityTimeTabelView.as_view()),
-    path('downtown', CityTimeTableView.as_view()),
+    path('inje/<int:pk>', BusTimeTableListView.as_view()),
+    path('inje/', BusCityListView.as_view()),
 ]
