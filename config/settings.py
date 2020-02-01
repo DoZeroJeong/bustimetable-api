@@ -78,10 +78,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
      'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bustime',
-        'USER': 'bustime',
-        'PASSWORD': 'bustime1234',
-        'HOST': 'bustime.cggyrlmuljw6.ap-northeast-2.rds.amazonaws.com',
+        'NAME': '******',
+        'USER': '*******',
+        'PASSWORD': '*******',
+        'HOST': '******',
         'PORT': '5432'
     }
 }
