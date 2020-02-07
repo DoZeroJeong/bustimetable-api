@@ -21,3 +21,20 @@ class BusTimetableModel(models.Model):
     def __str__(self):
         return self.bus_time
 
+
+class InterCityModel(models.Model):
+    city = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.city
+
+
+class InterCityTimetableModel(models.Model):
+    city_id = models.ForeignKey(InterCityModel, on_delete=models.CASCADE, related_name='intercity_table')
+    s_city = models.CharField(max_length=100)
+    time = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.time
+
+

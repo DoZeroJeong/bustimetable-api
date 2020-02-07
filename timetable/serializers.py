@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BusTimetableModel, BusCityModel
+from .models import BusTimetableModel, BusCityModel, InterCityModel, InterCityTimetableModel
 
 
 class BusTimetableSerializer(serializers.ModelSerializer):
@@ -36,4 +36,25 @@ class BusCitySerializer(serializers.ModelSerializer):
             'time_table',
         )
 
+
+class InterCityTimeTableSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = InterCityTimetableModel
+        fields = (
+            's_city',
+            'time',
+        )
+
+
+class InterCitySerializer(serializers.ModelSerializer):
+
+    intercity_table = InterCityTimeTableSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = InterCityModel
+        fields = (
+            'city',
+            'intercity_table',
+        )
 
