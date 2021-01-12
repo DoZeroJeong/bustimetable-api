@@ -1,59 +1,95 @@
-from django.shortcuts import render
+import re
+
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 
-# Create your views here.
 
-
-def city_bus_crawling():
-    req = Request("http://www.inje-pti.com/index.php?mp=p2_4")
+def won_bus_crawling():
+    req = Request("http://www.inje-pti.com/index.php?mp=p3_3_1")
     res = urlopen(req)
-    print(res)
     html = res.read()
     bs = BeautifulSoup(html, 'html.parser')
+    city_title_soup = bs.select('#content > div > div.bus_area > div > h6')
+    bus_time_soup = bs.select('#content > div > div.bus_area > div ')
 
-    bustime_key = bs.select('#content > div.bus_area > div > h6')
-    bustime_value = bs.select('#content > div.bus_area > div ')
+    city_key = list()
+    bus_time_value = list()
 
-    key_list = []
-    value_list = []
+    for city_tags in city_title_soup:
+        city = city_tags.get_text()
+        city_key.append(city)
 
-    for keys in bustime_key:
-        key = keys.get_text("")
-        key_list.append(key)
+    for bus_tags in bus_time_soup:
+        bus_time = bus_tags.get_text(',', strip=True).split(',')
+        bus_time_value.append(bus_time)
 
-    for values in bustime_value:
-        value = values.get_text(',', strip=True).split(',')
-        value_list.append(value)
+    city_timetable = dict.fromkeys(city_key)
 
-    city_timetable = dict.fromkeys(key_list)
+    for i in range(len(city_key)):
+        city_timetable[city_key[i]] = bus_time_value[i][1:]
 
-    for i in range(len(key_list)):
-        city_timetable[key_list[i]] = value_list[i]
     return city_timetable
 
 
-def intercity_bus_crawling():
+def inje_bus_crawling():
     req = Request("http://www.inje-pti.com/index.php?mp=p3_3_2")
     res = urlopen(req)
     html = res.read()
     bs = BeautifulSoup(html, 'html.parser')
-    bustime_key = bs.select('#content > div.bus_area > div > h6')
-    bustime_value = bs.select('#content > div.bus_area > div ')
+    city_title_soup = bs.select('#content > div.bus_area > div > h6')
+    bus_time_soup = bs.select('#content > div.bus_area > div')
 
-    key_list = []
-    value_list = []
+    city_key = list()
+    bus_time_value = list()
 
-    for keys in bustime_key:
-        key = keys.get_text("")
-        key_list.append(key)
+    for city_tags in city_title_soup:
+        city = city_tags.get_text()
+        city_key.append(city)
 
-    for values in bustime_value:
-        value = values.get_text(',', strip=True).split(',')
-        value_list.append(value)
+    for bus_tags in bus_time_soup:
+        bus_time = bus_tags.get_text(',', strip=True).split(',')
+        bus_time_value.append(bus_time)
 
-    intercity_timetable = dict.fromkeys(key_list)
+    # for value in bus_time:
+    #     if value in city_value:
+    #         continue
+    #     else:
+    #         bus_time_value.append(value)
+    city_timetable = dict.fromkeys(city_key)
 
-    for i in range(len(key_list)):
-        intercity_timetable[key_list[i]] = value_list[i]
-    return intercity_timetable
+    for i in range(len(city_key)):
+        city_timetable[city_key[i]] = bus_time_value[i][1:]
+
+    return city_timetable
+
+
+def hun_bus_crawling():
+    req = Request("http://www.inje-pti.com/index.php?mp=p3_3_3")
+    res = urlopen(req)
+    html = res.read()
+    bs = BeautifulSoup(html, 'html.parser')
+    city_title_soup = bs.select('#content > div.bus_area > div > h6')
+    bus_time_soup = bs.select('#content > div.bus_area > div ')
+
+    city_key = list()
+    bus_time_value = list()
+
+    for city_tags in city_title_soup:
+        city = city_tags.get_text()
+        city_key.append(city)
+
+    for bus_tags in bus_time_soup:
+        bus_time = bus_tags.get_text(',', strip=True).split(',')
+        bus_time_value.append(bus_time)
+
+    city_timetable = dict.fromkeys(city_key)
+
+    for i in range(len(city_key)):
+        city_timetable[city_key[i]] = bus_time_value[i][2:]
+
+    return city_timetable
+
+
+print('인제: ', inje_bus_crawling())
+print('원통:', won_bus_crawling())
+print('현리:', hun_bus_crawling())
