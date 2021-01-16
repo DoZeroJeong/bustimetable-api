@@ -1,4 +1,4 @@
-from rest_framework import status, views
+from rest_framework import status, views, filters
 from rest_framework.response import Response
 
 from urllib.request import Request, urlopen
@@ -72,19 +72,32 @@ def hyun_bus_crawling():
 
 
 class TimeTableView(views.APIView):
+    """BusTime List APIView"""
 
     def get(self, request, city):
-        if city == 'inje':
+
+        if city in 'inje':
             city_data, time_data = inje_bus_crawling()
-        elif city == 'won':
+        elif city in 'won':
             city_data, time_data = won_bus_crawling()
-        elif city == 'hyun':
+        elif city in 'hyun':
             city_data, time_data = hyun_bus_crawling()
+
         if len(city_data) > 0 and len(time_data) > 0:
             timetable = list()
             for i in range(len(city_data)):
-                timetable.append({'city': f'{city_data[i]}', 'time': f'{time_data[i][1:]}'})
+                timetable.append(
+                    {'city': f'{city_data[i]}',
+                     'items': [
+                         {
+                             'time': time_data[i][1:]
+                         }
+                     ]})
 
             return Response(data={'response': timetable}, status=status.HTTP_200_OK)
 
-        return Response(data={'response': "No data"}, status=status.HTTP_204_NO_CONTENT)
+        return Response(data={
+            'response': {
+                "message": "No data"
+            }
+        }, status=status.HTTP_204_NO_CONTENT)
